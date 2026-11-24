@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secure checkout</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: #f5f7fa; color: #202124;
+      font: 15px/1.5 Arial, sans-serif;
+    }
+    .layout { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+    .summary { background: #f0f3f7; display: flex; align-items: center; justify-content: center; padding: 48px; }
+    .product { max-width: 390px; width: 100%; }
+    .brand { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; color: #616b7c; }
+    .product h1 { font-size: 22px; margin: 50px 0 8px; }
+    .price { font-size: 34px; font-weight: 700; }
+    .muted { color: #667085; }
+    .secure { margin-top: 32px; font-size: 13px; color: #596579; }
+    .checkout { display: flex; align-items: center; justify-content: center; padding: 40px 24px; background: white; }
+    .form { width: min(100%, 440px); }
+    .form h2 { font-size: 21px; margin: 0 0 22px; }
+    .methods { display: flex; gap: 8px; margin-bottom: 22px; }
+    .method {
+      flex: 1; border: 1px solid #d7dce3; background: white; border-radius: 7px;
+      padding: 11px 7px; font-weight: 600; color: #374151; cursor: pointer;
+    }
+    .method.active { border: 2px solid #265df5; color: #1746cd; background: #f7f9ff; }
+    .field { margin-bottom: 15px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .input, select {
+      width: 100%; border: 1px solid #cfd5de; border-radius: 6px;
+      padding: 12px; font: inherit; background: white;
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .consent { font-size: 12px; color: #5d6675; margin: 19px 0; }
+    .pay {
+      width: 100%; border: 0; border-radius: 7px; background: #2459ed; color: white;
+      font-size: 16px; font-weight: 700; padding: 14px; cursor: pointer;
+    }
+    .pay:hover { background: #1648d7; }
+    .pay:disabled { background: #9db4f3; cursor: wait; }
+    .message { min-height: 22px; color: #b42318; font-size: 13px; margin-top: 8px; }
+    .secure-note { text-align: center; color: #8991a0; font-size: 12px; margin-top: 17px; }
+    .otp-row { display: flex; gap: 10px; align-items: center; }
+    .otp-row input { letter-spacing: 6px; font-size: 22px; text-align: center; }
+    .spinner {
+      display: inline-block; width: 16px; height: 16px; border: 2px solid #fff;
+      border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite;
+      vertical-align: -3px; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .success-box { text-align: center; padding: 30px 10px; }
+    .success-box i { font-size: 56px; color: #067647; }
+    .hidden { display: none !important; }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      .summary { padding: 28px 24px; order: 2; }
+      .product h1 { margin: 16px 0 4px; }
+      .secure { display: none; }
+      .checkout { padding: 30px 20px; order: 1; }
+    }
+  </style>
+</head>
+<body>
+<main class="layout">
+  <section class="summary">
+    <div class="product">
+      <div class="brand">THE SUBMISSIVE SUIT</div>
+      <h1>Complete your purchase</h1>
+      <div class="muted">One-time payment</div>
+      <div class="price" id="priceDisplay">$0.00</div>
+      <p class="muted">Instant confirmation to your email after checkout.</p>
+      <div class="secure">🔒 &nbsp;Secure checkout · Verified by your bank.</div>
+    </div>
+  </section>
+
+  <section class="checkout">
+
+    <div class="form" id="securePaymentNotice">
+      <h2>Secure payment setup</h2>
+      <p class="muted">Card details and verification codes must be collected only by a PCI-compliant payment provider.</p>
+      <p id="paymentAmount" class="price"></p>
+      <a class="pay" href="index.html#booking" style="display:block;text-align:center;text-decoration:none">Return to reservation</a>
+    </div>
+
+    <!-- STEP 3: SUCCESS -->
+    <div class="form success-box hidden" id="successBox">
+      <i>✅</i>
+      <h2>Payment verified</h2>
+      <p>We're finalizing your reservation for <strong id="priceDisplay3"></strong>.</p>
+      <p class="muted">A confirmation will be sent to your email shortly. Please keep this page open.</p>
+      <p class="secure-note" id="processingNote">Finalizing...</p>
+    </div>
+
+  </section>
+</main>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const amount = Number(params.get("amount")) || 0;
+  const priceText = "$" + amount.toFixed(2);
+  const paymentAmount = document.getElementById("paymentAmount");
+  if (paymentAmount) paymentAmount.textContent = priceText;
+  document.querySelectorAll("#successBox").forEach(el => el.classList.add("hidden"));
+</script>
+</body>
+</html>
+
